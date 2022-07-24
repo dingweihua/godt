@@ -87,3 +87,25 @@ func GetLastWeekDateMap(dateFormat string, dtFormat string) map[string]interface
 		"end_date_ms":    GetMondayUnixOfThisWeek() * 1000,
 	}
 }
+
+func GetDateMapByStartDateStr(startDateStr, dateFormat, dtFormat string) map[string]interface{} {
+	startTime, err := time.ParseInLocation(dateFormat, startDateStr, time.Local)
+	if err != nil {
+		return map[string]interface{}{}
+	}
+	endTime := startTime.AddDate(0, 0, 7)
+	firstTime, lastTime := startTime, startTime.AddDate(0, 0, 6)
+
+	return map[string]interface{}{
+		"start_date":     startTime.Format(dateFormat),
+		"end_date":       endTime.Format(dateFormat),
+		"utc_start_date": time.Unix(startTime.Unix(), 0).UTC().Format(dtFormat),
+		"utc_end_date":   time.Unix(endTime.Unix(), 0).UTC().Format(dtFormat),
+		"first_date":     firstTime.Format(dateFormat),
+		"last_date":      lastTime.Format(dateFormat),
+		"start_date_s":   startTime.Unix(),
+		"end_date_s":     endTime.Unix(),
+		"start_date_ms":  startTime.Unix() * 1000,
+		"end_date_ms":    endTime.Unix() * 1000,
+	}
+}

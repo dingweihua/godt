@@ -11,8 +11,8 @@ import (
 // Before testing, update the current date first.
 var (
 	thisYear             = 2022
-	thisMonth            = 1
-	thisMonday           = 17
+	thisMonth            = 7
+	thisMonday           = 18
 	thisMondayDate       = time.Date(thisYear, time.Month(thisMonth), thisMonday, 0, 0, 0, 0, time.Local)
 	thisMondayDateStr    = thisMondayDate.Format(DefaultDateFormat)
 	thisMondayUtcDateStr = thisMondayDate.Add(time.Hour * -8).Format(DefaultDateFormat)
@@ -223,6 +223,29 @@ func TestGetLastWeekDateMap(t *testing.T) {
 		"end_date_s":     thisMondayUnix,
 		"start_date_ms":  lastMondayUnix * 1000,
 		"end_date_ms":    thisMondayUnix * 1000,
+	}
+
+	gotListJson, _ := json.Marshal(mapToKeySortedList(got))
+	wantListJson, _ := json.Marshal(mapToKeySortedList(want))
+	if !reflect.DeepEqual(gotListJson, wantListJson) {
+		t.Errorf("excepted: %#v, got: %#v", wantListJson, gotListJson)
+	}
+}
+
+func TestGetDateMapByStartDateStr(t *testing.T) {
+	startDateStr := "2022-07-18"
+	got := GetDateMapByStartDateStr(startDateStr, DefaultDateFormat, DefaultDtFormat)
+	want := map[string]interface{}{
+		"start_date":     startDateStr,
+		"end_date":       "2022-07-25",
+		"utc_start_date": "2022-07-17 16:00:00",
+		"utc_end_date":   "2022-07-24 16:00:00",
+		"first_date":     startDateStr,
+		"last_date":      "2022-07-24",
+		"start_date_s":   1658073600,
+		"end_date_s":     1658678400,
+		"start_date_ms":  1658073600 * 1000,
+		"end_date_ms":    1658678400 * 1000,
 	}
 
 	gotListJson, _ := json.Marshal(mapToKeySortedList(got))
